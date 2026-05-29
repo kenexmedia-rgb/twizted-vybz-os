@@ -12,6 +12,11 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    console.error('[Supabase] Missing env vars:', { SUPABASE_URL: !!SUPABASE_URL, SUPABASE_KEY: !!SUPABASE_KEY });
+    return res.status(500).json({ error: 'Missing Supabase configuration' });
+  }
+
   const { table, action, data, filters, limit, order } = req.body;
 
   if (!table || !action) {
@@ -24,7 +29,8 @@ export default async function handler(req, res) {
       'Content-Type': 'application/json',
       'apikey': SUPABASE_KEY,
       'Authorization': `Bearer ${SUPABASE_KEY}`,
-      'Prefer': 'return=representation'
+      'Prefer': 'return=representation',
+      'Accept': 'application/json'
     };
 
     // Build query params
@@ -37,19 +43,19 @@ export default async function handler(req, res) {
     }
 
     if (order) params.append('order', order);
-    if (limit) params.append('limit', limit);
+    if (limit) params.append('limit', String(limit));
 
     const queryString = params.toString();
-    if (queryString && action === 'select') url += `?${queryString}`;
 
     let fetchOptions = { headers };
 
     if (action === 'select') {
       fetchOptions.method = 'GET';
       headers['Range'] = '0-99';
+      if (queryString) url += `?${queryString}`;
     } else if (action === 'insert') {
       fetchOptions.method = 'POST';
-      fetchOptions.body = JSON.stringify(data);
+      fetchOptions.body = JSON.stringify(Array.isArray(data) ? data : [data]);
     } else if (action === 'update') {
       fetchOptions.method = 'PATCH';
       fetchOptions.body = JSON.stringify(data);
@@ -61,10 +67,15 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: `Unknown action: ${action}` });
     }
 
+    console.log('[Supabase] →', fetchOptions.method, url);
     const response = await fetch(url, fetchOptions);
-    const result = await response.json();
+    const text = await response.text();
+
+    let result;
+    try { result = JSON.parse(text); } catch { result = text; }
 
     if (!response.ok) {
+      console.error('[Supabase] Error:', response.status, text);
       return res.status(response.status).json({ error: result });
     }
 
