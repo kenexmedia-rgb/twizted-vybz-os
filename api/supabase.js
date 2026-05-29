@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     const headers = {
       'Content-Type': 'application/json',
       'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      ...(SUPABASE_KEY.startsWith('sb_publishable_') ? {} : { 'Authorization': `Bearer ${SUPABASE_KEY}` }),
       'Prefer': 'return=representation',
       'Accept': 'application/json'
     };
