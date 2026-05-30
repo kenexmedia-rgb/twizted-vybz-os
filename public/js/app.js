@@ -4606,11 +4606,11 @@
   }
 
   // ── KICK OFF ─────────────────────────────────────────────
-  async function supabaseQuery(table, options = {}) {
+  async function sbQuery(table, filters = {}, order, limit) {
     const res = await fetch('/api/supabase', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ table, ...options })
+      body: JSON.stringify({ table, filters, order, limit })
     });
     if (!res.ok) throw new Error(`Supabase ${table} -> ${res.status}`);
     const json = await res.json();
@@ -4619,16 +4619,14 @@
 
   async function loadSupabaseData() {
     try {
-      const [leadsData, approvalsData, tasksData, healthData] = await Promise.all([
-        supabaseQuery('leads',     { order: 'Status.asc' }),
-        supabaseQuery('approvals', { order: 'Status.asc' }),
-        supabaseQuery('tasks',     { order: 'Priority.desc' }),
-        supabaseQuery('health')
+      const [leadsData, approvalsData, tasksData] = await Promise.all([
+        sbQuery('leads', {}, 'created_at.desc', 50),
+        sbQuery('approvals', {}, 'created_at.desc', 20),
+        sbQuery('tasks', {}, 'due_date.asc', 50)
       ]);
       renderLeads(leadsData);
       renderApprovals(approvalsData);
       renderTasks(tasksData);
-      renderHealth(healthData);
     } catch(e) {
       // Fail silently — hardcoded demo content stays visible
       console.warn('[AcaiOS] Supabase load failed:', e.message);
