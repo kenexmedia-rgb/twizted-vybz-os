@@ -4650,10 +4650,16 @@
     bar.appendChild(wrap);
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
-    // Load live Supabase data
+  // Load live Supabase data
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      loadSupabaseData();
+    });
+  } else {
     loadSupabaseData();
+  }
 
+  document.addEventListener('DOMContentLoaded', function() {
     // Init section bar pills and observe for new ones
     document.querySelectorAll('.chat-section-bar').forEach(renderSectionPills);
     const observer = new MutationObserver(function(mutations) {
