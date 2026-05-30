@@ -4600,9 +4600,9 @@
     try {
       const userId = TONY_USER_ID;
       const [leadsData, approvalsData, tasksData] = await Promise.all([
-        sbQuery('leads',     {}, 'created_at.desc', 50),
+        sbQuery('leads', {}, 'created_at.desc', 50),
         sbQuery('approvals', {}, 'created_at.desc', 20),
-        sbQuery('tasks',     {}, 'due_date.asc',    50)
+        sbQuery('tasks', {}, 'due_date.asc', 50)
       ]);
       renderLeads(leadsData);
       renderApprovals(approvalsData);
