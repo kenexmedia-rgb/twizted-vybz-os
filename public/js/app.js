@@ -4394,6 +4394,7 @@
 
   // Extract plain text from any Notion property type
   function nProp(page, key) {
+    if (!page.properties && Object.prototype.hasOwnProperty.call(page, key)) return page[key] ?? '';
     const p = page.properties?.[key];
     if (!p) return '';
     switch (p.type) {
@@ -4605,21 +4606,32 @@
   }
 
   // ── KICK OFF ─────────────────────────────────────────────
-  async function loadNotionData() {
+  async function supabaseQuery(table, options = {}) {
+    const res = await fetch('/api/supabase', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ table, ...options })
+    });
+    if (!res.ok) throw new Error(`Supabase ${table} -> ${res.status}`);
+    const json = await res.json();
+    return json.data || [];
+  }
+
+  async function loadSupabaseData() {
     try {
       const [leadsData, approvalsData, tasksData, healthData] = await Promise.all([
-        notionQuery(DB.leads,     [{ property: 'Status', direction: 'ascending' }]),
-        notionQuery(DB.approvals, [{ property: 'Status', direction: 'ascending' }]),
-        notionQuery(DB.tasks,     [{ property: 'Priority', direction: 'descending' }]),
-        notionQuery(DB.health)
+        supabaseQuery('leads',     { order: 'Status.asc' }),
+        supabaseQuery('approvals', { order: 'Status.asc' }),
+        supabaseQuery('tasks',     { order: 'Priority.desc' }),
+        supabaseQuery('health')
       ]);
-      renderLeads(leadsData.results       || []);
-      renderApprovals(approvalsData.results || []);
-      renderTasks(tasksData.results       || []);
-      renderHealth(healthData.results     || []);
+      renderLeads(leadsData);
+      renderApprovals(approvalsData);
+      renderTasks(tasksData);
+      renderHealth(healthData);
     } catch(e) {
       // Fail silently — hardcoded demo content stays visible
-      console.warn('[AcaiOS] Notion load failed:', e.message);
+      console.warn('[AcaiOS] Supabase load failed:', e.message);
     }
   }
 
@@ -4641,8 +4653,8 @@
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    // Load live Notion data
-    loadNotionData();
+    // Load live Supabase data
+    loadSupabaseData();
 
     // Init section bar pills and observe for new ones
     document.querySelectorAll('.chat-section-bar').forEach(renderSectionPills);
