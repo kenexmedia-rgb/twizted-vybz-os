@@ -4366,41 +4366,50 @@
     });
   })();
 
-  // ── SUPABASE WIRING ─────────────────────────────────────────
+  // ── NOTION WIRING ───────────────────────────────────────────
 
-  const TONY_USER_ID = 'a1b2c3d4-0000-0000-0000-000000000001';
+  const DB = {
+    leads:     '52aaaa77-e84c-4540-81e9-531abcb60ab5',
+    tasks:     '10355e0a-2421-4fbb-89ba-5c64ea07569e',
+    approvals: '1e70b59a-e099-4d99-b925-d498d6ca910d',
+    health:    '5feb5acd-c713-4730-92e4-bde6305ce1f1'
+  };
 
-  async function sbQuery(table, filters = {}, order = 'created_at.desc', limit = 50) {
-    const res = await fetch('/api/supabase', {
+  async function notionQuery(dbId, sorts, filter) {
+    const body = {};
+    if (sorts)  body.sorts  = sorts;
+    if (filter) body.filter = filter;
+    const res = await fetch('/api/notion', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ table, action: 'select', filters, order, limit })
+      body:    JSON.stringify({
+        endpoint: `/databases/${dbId}/query`,
+        method:   'POST',
+        body
+      })
     });
-    if (!res.ok) throw new Error(`Supabase ${table} → ${res.status}`);
-    const json = await res.json();
-    return json.data || [];
+    if (!res.ok) throw new Error(`Notion ${dbId} → ${res.status}`);
+    return res.json();
   }
 
-  async function sbInsert(table, data) {
-    const res = await fetch('/api/supabase', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ table, action: 'insert', data })
-    });
-    if (!res.ok) throw new Error(`Supabase insert ${table} → ${res.status}`);
-    const json = await res.json();
-    return json.data || [];
-  }
-
-  async function sbUpdate(table, data, filters = {}) {
-    const res = await fetch('/api/supabase', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ table, action: 'update', data, filters })
-    });
-    if (!res.ok) throw new Error(`Supabase update ${table} → ${res.status}`);
-    const json = await res.json();
-    return json.data || [];
+  // Extract plain text from any Notion property type
+  function nProp(page, key) {
+    const p = page.properties?.[key];
+    if (!p) return '';
+    switch (p.type) {
+      case 'title':        return p.title?.map(t => t.plain_text).join('') || '';
+      case 'rich_text':    return p.rich_text?.map(t => t.plain_text).join('') || '';
+      case 'select':       return p.select?.name || '';
+      case 'multi_select': return p.multi_select?.map(s => s.name).join(', ') || '';
+      case 'number':       return p.number ?? '';
+      case 'date':         return p.date?.start || '';
+      case 'checkbox':     return p.checkbox;
+      case 'email':        return p.email || '';
+      case 'phone_number': return p.phone_number || '';
+      case 'url':          return p.url || '';
+      case 'formula':      return p.formula?.string || p.formula?.number || '';
+      default:             return '';
+    }
   }
 
   function fmtDate(iso) {
@@ -4422,15 +4431,15 @@
     if (!list || !pages.length) return;
     list.innerHTML = '';
     pages.forEach((page, i) => {
-      const name    = page.name || 'Unnamed Lead';
-      const company = page.company || '';
-      const title   = '';
-      const source  = page.source || '';
-      const status  = page.status || 'new';
-      const phone   = page.phone || '';
-      const biz     = page.company || 'DKR Consulting';
-      const notes   = page.notes || '';
-      const value   = page.value || '';
+      const name    = nProp(page, 'Name') || nProp(page, 'Lead Name') || 'Unnamed Lead';
+      const company = nProp(page, 'Company') || '';
+      const title   = nProp(page, 'Title') || '';
+      const source  = nProp(page, 'Source') || '';
+      const status  = nProp(page, 'Status') || 'New';
+      const phone   = nProp(page, 'Phone') || '';
+      const biz     = nProp(page, 'Business') || 'DKR Consulting';
+      const notes   = nProp(page, 'Notes') || '';
+      const value   = nProp(page, 'Value') || '';
       const isHot   = status.toLowerCase() === 'hot';
       const label   = isHot ? 'Supervisor flagged · Hot lead' : 'New lead · Inbound Agent responded';
       const preview = notes || [title, company].filter(Boolean).join(' · ') || biz;
@@ -4467,19 +4476,19 @@
     const carousel = document.getElementById('approval-carousel');
     if (!carousel) return;
     const pending = pages.filter(p => {
-      const s = (p.status || '').toLowerCase();
+      const s = (nProp(p, 'Status') || '').toLowerCase();
       return s !== 'approved' && s !== 'rejected' && s !== 'sent';
     });
     if (!pending.length) return;
     // Remove existing slides
     carousel.querySelectorAll('.approval-slide').forEach(s => s.remove());
     pending.forEach((page, i) => {
-      const title  = page.title || 'Pending approval';
-      const agent  = page.agent || 'Kai';
-      const type   = page.type || 'Draft';
-      const recip  = page.recipient || '';
-      const draft  = page.draft || '';
-      const amount = page.amount || '';
+      const title  = nProp(page, 'Title') || 'Pending approval';
+      const agent  = nProp(page, 'Agent') || 'Kai';
+      const type   = nProp(page, 'Type') || 'Draft';
+      const recip  = nProp(page, 'Recipient') || '';
+      const draft  = nProp(page, 'Draft') || '';
+      const amount = nProp(page, 'Amount') || '';
       const label  = `${type} · ${agent}`;
       const msg    = recip ? `Ready to send to ${recip}${amount ? ' · ' + amount : ''}.` : title;
       const slide  = document.createElement('div');
@@ -4508,13 +4517,13 @@
     const now = new Date(); now.setHours(23,59,59,999);
     const todayItems = [], upcomingItems = [];
     pages.forEach(page => {
-      const task     = page.task || 'Untitled task';
-      const biz      = page.company || '';
-      const priority = page.priority || 'medium';
-      const due      = page.due_date || '';
-      const status   = page.status || '';
-      const kaiNote  = page.kai_note || '';
-      const cat      = page.category || '';
+      const task     = nProp(page, 'Task') || nProp(page, 'Name') || 'Untitled task';
+      const biz      = nProp(page, 'Business') || '';
+      const priority = nProp(page, 'Priority') || 'Medium';
+      const due      = nProp(page, 'Due Date') || '';
+      const status   = nProp(page, 'Status') || '';
+      const kaiNote  = nProp(page, 'Kai Note') || '';
+      const cat      = nProp(page, 'Category') || '';
       const s = status.toLowerCase();
       if (s === 'done' || s === 'complete' || s === 'completed') return;
       const dueDate  = due ? new Date(due) : null;
@@ -4554,9 +4563,9 @@
     let totalRev = 0, totalTarget = 0;
     const bars = [];
     pages.forEach(page => {
-      const name   = page.business_name || page.name || '';
-      const rev    = parseFloat(page.revenue_mtd || page.revenue || 0) || 0;
-      const target = parseFloat(page.monthly_target || page.target || 0) || 0;
+      const name   = nProp(page, 'Name') || nProp(page, 'Business') || '';
+      const rev    = parseFloat(nProp(page, 'Revenue MTD') || nProp(page, 'Revenue') || 0) || 0;
+      const target = parseFloat(nProp(page, 'Monthly Target') || nProp(page, 'Target') || 0) || 0;
       totalRev    += rev;
       totalTarget += target;
       if (name && (rev > 0 || target > 0)) bars.push({ name, rev, target });
@@ -4596,20 +4605,21 @@
   }
 
   // ── KICK OFF ─────────────────────────────────────────────
-  async function loadSupabaseData() {
+  async function loadNotionData() {
     try {
-      const userId = TONY_USER_ID;
-      const [leadsData, approvalsData, tasksData] = await Promise.all([
-        sbQuery('leads', {}, 'created_at.desc', 50),
-        sbQuery('approvals', {}, 'created_at.desc', 20),
-        sbQuery('tasks', {}, 'due_date.asc', 50)
+      const [leadsData, approvalsData, tasksData, healthData] = await Promise.all([
+        notionQuery(DB.leads,     [{ property: 'Status', direction: 'ascending' }]),
+        notionQuery(DB.approvals, [{ property: 'Status', direction: 'ascending' }]),
+        notionQuery(DB.tasks,     [{ property: 'Priority', direction: 'descending' }]),
+        notionQuery(DB.health)
       ]);
-      renderLeads(leadsData);
-      renderApprovals(approvalsData);
-      renderTasks(tasksData);
+      renderLeads(leadsData.results       || []);
+      renderApprovals(approvalsData.results || []);
+      renderTasks(tasksData.results       || []);
+      renderHealth(healthData.results     || []);
     } catch(e) {
       // Fail silently — hardcoded demo content stays visible
-      console.warn('[AcaiOS] Supabase load failed:', e.message);
+      console.warn('[AcaiOS] Notion load failed:', e.message);
     }
   }
 
@@ -4631,8 +4641,8 @@
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    // Load live Supabase data
-    loadSupabaseData();
+    // Load live Notion data
+    loadNotionData();
 
     // Init section bar pills and observe for new ones
     document.querySelectorAll('.chat-section-bar').forEach(renderSectionPills);
