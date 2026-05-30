@@ -1,12 +1,12 @@
-  /* ============================================================
-     AcaiOS v160 — Versailles Shell
+﻿  /* ============================================================
+     AcaiOS v160 â€” Versailles Shell
      Conversation-First Canvas Architecture | May 2026
   ============================================================ */
 
   html { height: 100%; overflow: hidden; }
   body { height: 100%; overflow: hidden; }
 
-  /* ── LAYER 1: HOME ──────────────────────────────────────── */
+  /* â”€â”€ LAYER 1: HOME â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   #layer-home {
     position: fixed; inset: 0;
     max-width: 430px; margin: 0 auto;
@@ -18,9 +18,8 @@
     /* header is 60px flex child; home-center is flex:1 child below it */
   }
 
-  /* Universal centering — works on every screen, no hardcoded pixels.
+  /* Universal centering â€” works on every screen, no hardcoded pixels.
      header=60px is a flex sibling above. input bar=~100px is fixed over bottom.
-     padding-bottom:100px shrinks the centering zone so it ends where
      the input bar begins. justify-content:center then finds true middle
      of that zone. Result: block sits centered in the visible content area
      on every device. */
@@ -92,7 +91,7 @@
     animation: fadeUp 0.5s ease both;
   }
 
-  /* ── HOME SPARK (GPT exact) ─────────────────────────────── */
+  /* â”€â”€ HOME SPARK (GPT exact) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .home-spark {
     width: 50px;
     height: 50px;
@@ -102,7 +101,7 @@
     filter: drop-shadow(0 0 18px rgba(105,90,255,.45));
   }
 
-  /* ── HOME HEADLINE (GPT exact) ──────────────────────────── */
+  /* â”€â”€ HOME HEADLINE (GPT exact) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .home-headline {
     font-size: clamp(42px,12vw,58px) !important;
     line-height: 1.05 !important;
@@ -112,7 +111,7 @@
     text-align: center;
   }
 
-  /* ── HOME PROMPT CARD (GPT exact) ───────────────────────── */
+  /* â”€â”€ HOME PROMPT CARD (GPT exact) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .home-prompt-card {
     margin: 10px 0 32px;
     padding: 24px;
@@ -159,16 +158,12 @@
     font-weight: 700;
     letter-spacing: .05em;
   }
-    background: linear-gradient(180deg,rgba(0,0,0,.04),rgba(0,0,0,.02));
-    border-color: rgba(0,0,0,.08);
-  }
-
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(1.5vw); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── LAYER 2: CHAT ──────────────────────────────────────── */
+  /* â”€â”€ LAYER 2: CHAT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   #layer-chat {
     position: fixed; inset: 0;
     max-width: 430px; margin: 0 auto;
@@ -215,10 +210,6 @@
     border-radius: 18px;
     overflow: hidden;
   }
-    background: #ffffff;
-    border-color: rgba(0,0,0,0.08);
-  }
-
   .chat-action { display:flex; align-items:center; justify-content:space-between; margin-top:10px; padding:14px 17px; background:rgba(255,255,255,0.08); border-radius:14px; cursor:pointer; border:1px solid rgba(255,255,255,0.07); transition:background 0.15s ease; }
   .chat-action:active { background:rgba(255,255,255,0.08); }
   .chat-action-label { font-size:13px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-primary); }
@@ -226,7 +217,7 @@
 
   .chat-input-wrap { display: none !important; }
 
-  /* ── LAYER 3: OVERLAYS ──────────────────────────────────── */
+  /* â”€â”€ LAYER 3: OVERLAYS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .overlay {
     position: fixed; inset: 0; max-width: 430px; margin: 0 auto;
     z-index: 20; display: flex; flex-direction: column;
@@ -252,7 +243,7 @@
   .overlay-scroll { flex:1; overflow-y:scroll; -webkit-overflow-scrolling:touch; touch-action: pan-y; }
   .overlay-body { padding: 28px 26px calc(180px + env(safe-area-inset-bottom)); display:flex; flex-direction:column; gap:28px; }
 
-  /* ── APP HEADER ─────────────────────────────────────────── */
+  /* â”€â”€ APP HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .app-header { display:flex; align-items:center; justify-content:space-between; padding:0 16px 0 20px; height:60px; flex-shrink:0; background:#000000; position:relative; }
   .app-header.bordered { border-bottom:1px solid var(--border); }
   .header-menu { background:none; border:none; cursor:pointer; display:flex; flex-direction:column; gap:5px; padding:4px; -webkit-tap-highlight-color:transparent; }
@@ -267,22 +258,22 @@
   .avatar { width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.10); color:var(--text-primary); font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; cursor:pointer; }
   .avatar:active { opacity:0.7; }
 
-  /* ── FIXED INPUT BAR — global, always visible ────────────── */
-  /* ── GEMINI-STYLE INPUT BAR ─────────────────────────────── */
+  /* â”€â”€ FIXED INPUT BAR â€” global, always visible â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* â”€â”€ GEMINI-STYLE INPUT BAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .fixed-input-bar { position:fixed; bottom:40px; left:0; right:0; width:100vw; max-width:430px; margin:0 auto; z-index:60; pointer-events:none; transition: none; touch-action:none; }
   .fixed-input-bar.dragging { transition: none !important; opacity: 0.92; }
   .fixed-input-bar.floating { left:50%; right:auto; transform:translateX(-50%); width:calc(100% - 32px); max-width:398px; }
 
   .bottom-fade { display: none; }  .fixed-input-inner { background:none; padding:10px 20px 0px; pointer-events:auto; }
 
-  /* One unified pill — matches Gemini exactly */
+  /* One unified pill â€” matches Gemini exactly */
   /* old pill input-bar removed */
 
   /* Mic listening state */
   #mic-btn.listening { background:rgba(255,69,58,0.15); border-color:rgba(255,69,58,0.4); animation:micPulse 1.2s ease-in-out infinite; }
   @keyframes micPulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
 
-  /* ── INPUT BAR — Gemini 1:1 single row pill ─────────────── */
+  /* â”€â”€ INPUT BAR â€” Gemini 1:1 single row pill â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .fixed-input-inner { padding: 10px 20px 0px !important; background: none !important; }
 
   .input-bar {
@@ -340,9 +331,6 @@
     box-shadow: 0 18px 70px rgba(0,0,0,0.75) !important;
   }
 
-    background: #FFFFFF !important;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12) !important;
-  }
 
   .input-bar textarea {
     flex: 1 1 auto !important;
@@ -395,7 +383,7 @@
     letter-spacing: -0.02em !important;
   }
 
-  /* Pure CSS mic — GPT exact */
+  /* Pure CSS mic â€” GPT exact */
   .ib-mic-css {
     width: 30px;
     height: 30px;
@@ -484,7 +472,7 @@
   }
   .ib-btn-send:active { background: #552d80 !important; }
 
-  /* Header model pill — Gemini style, sits next to wordmark */
+  /* Header model pill â€” Gemini style, sits next to wordmark */
   .header-model-pill {
     display: flex;
     align-items: center;
@@ -502,7 +490,7 @@
   }
   .header-model-pill:active { opacity: 0.6; }
 
-  /* Model pill — black bg, white text, matches Claude.ai exactly */
+  /* Model pill â€” black bg, white text, matches Claude.ai exactly */
   .ib-model-pill {
     height: 36px;
     padding: 0 16px;
@@ -525,7 +513,7 @@
 
   /* Light mode */
 
-  /* ── LEAD CARD EXPANDABLE (overlay version) ─────────────── */
+  /* â”€â”€ LEAD CARD EXPANDABLE (overlay version) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .lead-card { background: rgba(24,24,24,0.92); border: 1px solid rgba(255,255,255,0.075); border-radius: 28px; box-shadow: 0 20px 58px rgba(0,0,0,0.34); padding:23px 24px 19px; display:flex; flex-direction:column; gap:16px; position:relative; transition:background 0.15s ease; }
   .lead-card:active { background:rgba(30,30,30,0.95); }
   .lead-card-header { display:flex; align-items:center; gap:10px; padding-right:36px; }
@@ -546,10 +534,10 @@
   .lead-card-btn.primary { background:rgba(255,255,255,0.15); color:rgba(255,255,255,0.9); }
   .lead-card-btn.secondary { background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.55); border:1px solid rgba(255,255,255,0.1); }
 
-  /* ── MISC OVERRIDES ─────────────────────────────────────── */
-  /* drawer light mode — see main light block below */
+  /* â”€â”€ MISC OVERRIDES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* drawer light mode â€” see main light block below */
 
-  /* ── LAYER 0: LOGIN ─────────────────────────────────────── */
+  /* â”€â”€ LAYER 0: LOGIN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   #layer-login { display:none !important; pointer-events:none !important; visibility:hidden !important; }
   #layer-login-DISABLED {
     position: fixed; inset: 0;
@@ -563,7 +551,7 @@
   #layer-login.hidden {
     opacity: 0; transform: scale(0.97); pointer-events: none;
   }
-  /* Top spacer — logo + headline live here */
+  /* Top spacer â€” logo + headline live here */
   .login-top {
     display: flex; flex-direction: column;
     align-items: center; width: 100%;
@@ -594,7 +582,7 @@
     font-size: 15px; color: rgba(255,255,255,0.35);
     text-align: center; line-height: 1.5;
   }
-  /* Form — fills middle, consistent gaps between every element */
+  /* Form â€” fills middle, consistent gaps between every element */
   .login-form {
     display: flex; flex-direction: column;
     align-items: center; width: 100%; gap: 20px;
@@ -662,7 +650,7 @@
     -webkit-tap-highlight-color: transparent;
   }
   .login-forgot:active { color: #A8A29E; }
-  /* Powered by — pinned to bottom, never overlaps */
+  /* Powered by â€” pinned to bottom, never overlaps */
   .login-powered {
     font-size: 11px; font-weight: 500;
     letter-spacing: 0.1em; text-transform: uppercase;
@@ -671,7 +659,7 @@
   }
   /* Light mode */
 
-  /* ── LIGHT MODE COMPLETE ────────────────────────────────── */
+  /* â”€â”€ LIGHT MODE COMPLETE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   /* Input bar */
 
@@ -679,7 +667,7 @@
 
   /* Education banners */
 
-  /* Overlay headers — bell + gear */
+  /* Overlay headers â€” bell + gear */
 
   /* Page titles */
 
@@ -688,11 +676,10 @@
   /* Fixed input bar background fade */
 
   /* ============================================================
-     ACAIOS CLIENT PORTAL — PRODUCTION STYLESHEET
-     Version: 151 | May 2026
+     ACAIOS CLIENT PORTAL â€” PRODUCTION STYLESHEET
   ============================================================ */
 
-  /* ── Z-INDEX SCALE ─────────────────────────────────────────
+  /* â”€â”€ Z-INDEX SCALE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
      1    base content
      10   sticky elements (week strip, etc.)
      50   dropdowns / company switcher
@@ -705,9 +692,9 @@
      800  lead detail screen
      900  drawer overlay
      1000 drawer
-  ──────────────────────────────────────────────────────────── */
+  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
-  /* ── TOKENS ─────────────────────────────────────────────── */
+  /* â”€â”€ TOKENS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   * {
     margin: 0;
@@ -728,7 +715,7 @@
     --accent: #FFFFFF;
     --font: 'Inter', system-ui, -apple-system, sans-serif;
 
-    /* ── SPACING SYSTEM ─────────────────────────────────── */
+    /* â”€â”€ SPACING SYSTEM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     --page-bottom-gap: calc(180px + env(safe-area-inset-bottom));
     --section-gap: 28px;
     --card-gap: 16px;
@@ -751,7 +738,7 @@
     --badge-cold-bg: rgba(255,255,255,0.05);
   }
 
-  /* ── BASE ───────────────────────────────────────────────── */
+  /* â”€â”€ BASE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   body {
     background: var(--bg);
@@ -767,7 +754,7 @@
     flex-direction: column;
   }
 
-  /* ── HEADER ─────────────────────────────────────────────── */
+  /* â”€â”€ HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   header {
     position: sticky;
@@ -885,7 +872,7 @@
   .theme-sun { display: none; }
   .theme-moon { display: block; }
 
-  /* ── HERO ───────────────────────────────────────────────── */
+  /* â”€â”€ HERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .hero {
     width: 100%;
@@ -924,7 +911,7 @@
     text-transform: uppercase;
   }
 
-  /* ── LAYOUT / MAIN ──────────────────────────────────────── */
+  /* â”€â”€ LAYOUT / MAIN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   main {
     padding: 24px 28px 160px;
@@ -933,23 +920,10 @@
     gap: 72px;
   }
 
-  main::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 430px;
-    height: 420px;
-    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 100%);
-    pointer-events: none;
-    z-index: 0;
-  }
 
   main > * { position: relative; z-index: 1; }
 
-  /* ── COMPANY SWITCHER ───────────────────────────────────── */
+  /* â”€â”€ COMPANY SWITCHER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .switcher-wrapper {
     position: relative;
@@ -1052,7 +1026,7 @@
   .dropdown-item.active .dropdown-item-name { color: var(--text-primary); }
   .dropdown-item.inactive .dropdown-item-name { color: var(--text-secondary); }
 
-  /* ── HOME SECTIONS ──────────────────────────────────────── */
+  /* â”€â”€ HOME SECTIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .greeting h1 {
     font-size: 32px;
@@ -1129,7 +1103,7 @@
     stroke-width: 2.5;
   }
 
-  /* ── SNAPSHOT CAROUSEL ──────────────────────────────────── */
+  /* â”€â”€ SNAPSHOT CAROUSEL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .snapshot-carousel {
     position: relative;
@@ -1213,7 +1187,7 @@
     margin-top: 6px;
   }
 
-  /* ── WELCOME NOTIFICATION ───────────────────────────────── */
+  /* â”€â”€ WELCOME NOTIFICATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .kai-status-dot-ring svg { width: 18px; height: 18px; }
 
   .notif-panel {
@@ -1313,7 +1287,7 @@
     font-size: 12px;
   }
 
-  /* ── DRAWER ─────────────────────────────────────────────── */
+  /* â”€â”€ DRAWER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .drawer-overlay {
     display: none;
@@ -1346,7 +1320,7 @@
 
   .drawer.open { left: 0; }
 
-  /* Brand — fixed at top */
+  /* Brand â€” fixed at top */
   .drawer-brand {
     padding: 56px 24px 12px;
     font-size: 20px;
@@ -1356,7 +1330,7 @@
     flex-shrink: 0;
   }
 
-  /* Scrollable middle — nav + recents scroll, fade under footer */
+  /* Scrollable middle â€” nav + recents scroll, fade under footer */
   .drawer-scroll {
     flex: 1;
     overflow-y: auto;
@@ -1410,7 +1384,7 @@
   .drawer-item.danger .drawer-item-icon svg { stroke: #FF453A; }
   .drawer-item.danger .drawer-item-label { color: #FF453A; }
 
-  /* Footer — fixed at bottom, never scrolls */
+  /* Footer â€” fixed at bottom, never scrolls */
   .drawer-footer {
     flex-shrink: 0;
     padding: 14px 20px;
@@ -1485,7 +1459,7 @@
   }
   .drawer-footer-gear:active { opacity: 1; }
 
-  /* ── DRAWER RECENTS ────────────────────────────────────── */
+  /* â”€â”€ DRAWER RECENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .drawer-recents {
     padding: 8px 0 0;
     border-top: 1px solid rgba(255,255,255,0.07);
@@ -1519,8 +1493,8 @@
     text-overflow: ellipsis;
   }
 
-  /* ── AGENT EDUCATION BANNER ────────────────────────────── */
-  /* ── EDU LEARN MORE — replaces old edu banners ─────────── */
+  /* â”€â”€ AGENT EDUCATION BANNER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* â”€â”€ EDU LEARN MORE â€” replaces old edu banners â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .edu-learn-more {
     font-size: 13px;
     color: var(--text-tertiary);
@@ -1536,7 +1510,7 @@
   }
   .edu-learn-more:active { opacity: 0.6; }
 
-  /* ── AGENT CARDS ────────────────────────────────────────── */
+  /* â”€â”€ AGENT CARDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .agent-cards {
     display: flex;
@@ -1544,7 +1518,7 @@
     gap: 16px;
   }
 
-  /* ── COLLAPSIBLE AGENT SECTIONS ──────────────────────────── */
+  /* â”€â”€ COLLAPSIBLE AGENT SECTIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .agent-section-header {
     display: flex;
     align-items: center;
@@ -1587,7 +1561,7 @@
     pointer-events: none;
   }
 
-  /* ── AUTONOMY SLIDER ────────────────────────────────── */
+  /* â”€â”€ AUTONOMY SLIDER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .autonomy-wrap { padding: 18px 20px 20px; }
   .autonomy-label-title { font-size: 15px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
   .autonomy-label-sub   { font-size: 13px; color: var(--text-tertiary); margin-bottom: 16px; line-height: 1.5; }
@@ -1648,7 +1622,7 @@
     flex: 1;
   }
 
-  /* Preview line — hidden now that action text shows */
+  /* Preview line â€” hidden now that action text shows */
   .agent-card-preview { display: none; } .agent-card-preview-x {
     font-size: 12px;
     color: var(--text-tertiary);
@@ -1699,7 +1673,7 @@
     font-weight: 400;
   }
 
-  /* Action text — visible by default (half-expanded) */
+  /* Action text â€” visible by default (half-expanded) */
   .agent-card-action {
     font-size: 25px;
     font-weight: 370;
@@ -1737,7 +1711,7 @@
   }
   .agent-card.open .agent-card-tap-hint { display: none; }
 
-  /* Channels + connectors — hidden until fully open */
+  /* Channels + connectors â€” hidden until fully open */
   .agent-card-body {
     overflow: hidden;
     max-height: 0;
@@ -1765,8 +1739,8 @@
   }
   .agent-card.open .agent-card-chevron { transform: rotate(180deg); }
 
-  /* ── CHAT SECTION COLLAPSE BAR ──────────────────────────── */
-  /* ── SECTION BAR — GPT editorial hero style ─────────────── */
+  /* â”€â”€ CHAT SECTION COLLAPSE BAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* â”€â”€ SECTION BAR â€” GPT editorial hero style â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .chat-section-bar {
     display: flex;
     flex-direction: column;
@@ -1827,7 +1801,7 @@
     transform: rotate(-90deg);
   }
 
-  /* Collapsed state — shrink back to compact label */
+  /* Collapsed state â€” shrink back to compact label */
   .chat-section-bar.collapsed {
     padding: 10px 2px;
     border-bottom: none;
@@ -1887,7 +1861,7 @@
     opacity: 0;
   }
 
-  /* ── CHAT CARD ENTRY ANIMATION ─────────────────────────── */
+  /* â”€â”€ CHAT CARD ENTRY ANIMATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   @keyframes cardSlideUp {
     0%   { opacity: 0; transform: translateY(32px) scale(0.97); }
@@ -1900,9 +1874,9 @@
     animation: cardSlideUp 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
 
-  /* ── CHAT CARDS (leads, approvals) — agent card pattern ── */
+  /* â”€â”€ CHAT CARDS (leads, approvals) â€” agent card pattern â”€â”€ */
 
-  /* Shared card shell — identical to .agent-card */
+  /* Shared card shell â€” identical to .agent-card */
   .chat-card {
     background: rgba(24,24,24,0.92);
     border: 1px solid rgba(255,255,255,0.075);
@@ -1920,7 +1894,7 @@
   }
   .chat-card:active { background: rgba(30,30,30,0.95); }
 
-  /* Top row — name left, chevron right */
+  /* Top row â€” name left, chevron right */
   .chat-card-top {
     display: flex;
     align-items: center;
@@ -1948,7 +1922,7 @@
   }
   .chat-card.open .chat-card-chevron { transform: rotate(180deg); }
 
-  /* Body text — same as .agent-card-action */
+  /* Body text â€” same as .agent-card-action */
   .chat-card-body-text {
     font-size: 16px;
     font-weight: 400;
@@ -1969,7 +1943,7 @@
     -webkit-line-clamp: unset;
   }
 
-  /* Tap hint — same as agent card */
+  /* Tap hint â€” same as agent card */
   .chat-card-hint {
     display: flex;
     align-items: center;
@@ -1988,7 +1962,7 @@
   }
   .chat-card.open .chat-card-hint { display: none; }
 
-  /* Expanded detail section — hidden until open */
+  /* Expanded detail section â€” hidden until open */
   .chat-card-detail {
     display: none;
     flex-direction: column;
@@ -2100,7 +2074,7 @@
 
   /* Light mode */
 
-  /* ── AUDIO PLAYER ───────────────────────────────────────── */
+  /* â”€â”€ AUDIO PLAYER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .audio-player {
     display: flex;
     align-items: center;
@@ -2144,7 +2118,7 @@
   .audio-time-row { display: flex; justify-content: space-between; }
   .audio-time { font-size: 11px; color: rgba(255,255,255,0.4); }
 
-  /* ── TRANSCRIPT LIGHTBOX ─────────────────────────────────── */
+  /* â”€â”€ TRANSCRIPT LIGHTBOX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   #overlay-transcript {
     position: fixed;
     inset: 0;
@@ -2272,7 +2246,7 @@
   }
   .transcript-view-btn svg { flex-shrink: 0; stroke: rgba(255,255,255,0.4); fill: none; stroke-width: 1.8; stroke-linecap: round; }
 
-  /* ── COMMUNICATION ROWS ─────────────────────────────────── */
+  /* â”€â”€ COMMUNICATION ROWS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .comm-row {
     display: flex;
     align-items: center;
@@ -2320,7 +2294,7 @@
   }
   .lead-stat-link:active { opacity: 0.6; }
 
-  /* ── CHANNEL PILLS ───────────────────────────────────────── */
+  /* â”€â”€ CHANNEL PILLS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .agent-channels {
     display: flex;
     gap: 6px;
@@ -2344,7 +2318,7 @@
   .agent-channel-pill.voice { background: transparent; color: rgba(255,255,255,0.9); border-color: rgba(255,255,255,0.15); }
   .agent-channel-pill.sms   { background: transparent; color: rgba(255,255,255,0.9); border-color: rgba(255,255,255,0.15); }
   .agent-channel-pill.email { background: transparent; color: rgba(255,255,255,0.9); border-color: rgba(255,255,255,0.15); }
-  /* ── APPROVAL SYSTEM ────────────────────────────────────── */
+  /* â”€â”€ APPROVAL SYSTEM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .approval-carousel {
     position: relative;
@@ -2505,7 +2479,7 @@
   .approval-btn.approve { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); }
   .approval-btn.edit { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.1); }
 
-  /* ── SCREENS (base) ─────────────────────────────────────── */
+  /* â”€â”€ SCREENS (base) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .screen {
     display: none;
@@ -2564,7 +2538,7 @@
     flex-shrink: 0;
   }
 
-  /* ── BREADCRUMB ─────────────────────────────────────────── */
+  /* â”€â”€ BREADCRUMB â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .breadcrumb {
     display: flex;
@@ -2617,7 +2591,7 @@
   .back-arrow:active { opacity: 0.5; }
   .back-arrow svg { width: 16px; height: 16px; stroke: var(--text-secondary); fill: none; stroke-width: 2; }
 
-  /* ── DOCUMENT VIEWER ────────────────────────────────────── */
+  /* â”€â”€ DOCUMENT VIEWER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .doc-viewer {
     display: none;
@@ -2730,7 +2704,7 @@
   .doc-row-meta { font-size: 15px; color: var(--text-secondary); }
   .doc-row-arrow { width: 14px; height: 14px; stroke: var(--text-tertiary); fill: none; stroke-width: 2; flex-shrink: 0; }
 
-  /* ── COMPANIES (overlay system — see .overlay, .overlay-sub) ── */
+  /* â”€â”€ COMPANIES (overlay system â€” see .overlay, .overlay-sub) â”€â”€ */
 
   .company-card { padding: 24px; background: rgba(255,255,255,0.042); border: 1px solid rgba(255,255,255,0.055); border-radius: 22px; box-shadow: none; cursor: pointer; transition: background 0.15s ease; }
   .company-card:active { opacity: 0.5; }
@@ -2739,7 +2713,7 @@
   .company-card-tag { display: inline-block; font-size: 10px; font-weight: 500; color: var(--text-tertiary); letter-spacing: 0.08em; text-transform: uppercase; margin-right: 10px; }
   .company-card-footer { margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.075); display: flex; justify-content: space-between; gap: 12px; color: rgba(255,255,255,0.26); font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 760; }
 
-  /* ── COMPANY DETAIL DASHBOARD — GPT exact ───────────────── */
+  /* â”€â”€ COMPANY DETAIL DASHBOARD â€” GPT exact â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .finance-card { border-radius: 30px; background: linear-gradient(180deg,rgba(255,255,255,.072),rgba(255,255,255,.035)); border: 1px solid rgba(255,255,255,.075); box-shadow: 0 22px 80px rgba(0,0,0,.45); overflow: hidden; }
   .finance-top { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid rgba(255,255,255,.075); }
   .finance-cell { padding: 17px 15px; border-right: 1px solid rgba(255,255,255,.075); }
@@ -2773,7 +2747,7 @@
   .co-section-count { color: rgba(255,255,255,.42); font-size: 13px; }
   .company-card-tag.live { color: var(--text-secondary); }
 
-  /* ── CHAT SCREEN ────────────────────────────────────────── */
+  /* â”€â”€ CHAT SCREEN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .chat-screen {
     display: flex;
@@ -2976,7 +2950,7 @@
   .chat-plus-btn:active { background: rgba(255,255,255,0.18); }
   .chat-plus-btn svg { width: 16px; height: 16px; }
 
-  /* ── LEAD DETAIL SCREEN ─────────────────────────────────── */
+  /* â”€â”€ LEAD DETAIL SCREEN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .lead-detail-screen {
     display: none;
@@ -3120,7 +3094,7 @@
   .acai-sugg-btn.do-it { background: rgba(255,255,255,0.88); color: #0A0A0A; }
   .acai-sugg-btn.dismiss { background: rgba(255,255,255,0.05); color: var(--text-secondary); }
 
-  /* ── ACTIVE WORKSPACE — CHAT-COMMANDED SURFACES ───────────── */
+  /* â”€â”€ ACTIVE WORKSPACE â€” CHAT-COMMANDED SURFACES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .active-workspace {
     flex-shrink: 0;
@@ -3355,7 +3329,7 @@
     color: var(--text-secondary);
   }
 
-  /* ── SWIPE-FIRST INTERACTION LAYER ─────────────────────────
+  /* â”€â”€ SWIPE-FIRST INTERACTION LAYER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
      Added for AcaiOS mobile behavior:
      - Swipe left/right on Active Workspace = next/previous surface
      - Swipe down on Active Workspace = minimize
@@ -3363,7 +3337,7 @@
      - Swipe left on workspace cards = reveal card actions
      - Swipe right on workspace cards = close/recenter card
      - Edge swipe from left side = open drawer
-  ──────────────────────────────────────────────────────────── */
+  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .active-workspace {
     touch-action: pan-y;
@@ -3415,33 +3389,10 @@
     letter-spacing: 0.01em;
   }
 
-  /* ── LIGHT MODE ─────────────────────────────────────────── */
+  /* â”€â”€ LIGHT MODE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
-    --bg: #FFFFFF;
-    --surface: #F6F8FA;
-    --border: rgba(0,0,0,0.08);
-    --text-primary: #0A2540;
-    --text-secondary: #425466;
-    --text-tertiary: #8898AA;
-    --accent: #A8A29E;
-    --font: 'Inter', system-ui, -apple-system, sans-serif;
 
-    --status-active: #16A34A;
-    --status-active-bg: rgba(22,163,74,0.1);
-    --status-queued: #D97706;
-    --status-queued-bg: rgba(217,119,6,0.1);
-    --status-sleeping: rgba(0,0,0,0.25);
-    --status-sleeping-bg: rgba(0,0,0,0.05);
 
-    --badge-new: #4F46E5;
-    --badge-new-bg: rgba(79,70,229,0.1);
-    --badge-hot: #D97706;
-    --badge-hot-bg: rgba(217,119,6,0.1);
-    --badge-replied: #16A34A;
-    --badge-replied-bg: rgba(22,163,74,0.1);
-    --badge-cold: rgba(0,0,0,0.3);
-    --badge-cold-bg: rgba(0,0,0,0.05);
-  }
 
   /* Header */
 
@@ -3473,7 +3424,7 @@
 
   /* Lead detail */
 
-  /* ── MOTION ─────────────────────────────────────────────── */
+  /* â”€â”€ MOTION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   @keyframes acaiPulse {
     0%, 100% { opacity: 0.4; transform: scale(1); }
@@ -3575,17 +3526,10 @@
     color: var(--text-primary);
   }
 
-    border-color: rgba(0,0,0,0.1);
-    color: #425466;
-  }
 
-    background: #0A2540;
-    border-color: transparent;
-    color: #FFFFFF;
-  }
 
   /* Lead rows */
-  /* ── LEAD CARDS (agent-card style, expandable) ─────────────── */
+  /* â”€â”€ LEAD CARDS (agent-card style, expandable) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .lead-card {
     background: rgba(24,24,24,0.92);
@@ -3621,7 +3565,7 @@
   }
   .lead-card-dismiss:active { background: rgba(255,255,255,0.14); }
 
-  /* Collapse toggle — pure CSS checkbox hack */
+  /* Collapse toggle â€” pure CSS checkbox hack */
   .lead-collapse-toggle { display: none; }
 
   /* When checkbox checked = collapsed state */
@@ -3737,7 +3681,7 @@
     line-height: 1.4;
   }
 
-  /* ── LEAD CARD LIGHT MODE ─────────────────────────────────── */
+  /* â”€â”€ LEAD CARD LIGHT MODE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
   .lead-badge {
     font-size: 9px;
@@ -3769,21 +3713,9 @@
     color: var(--badge-cold);
   }
 
-    background: var(--badge-new-bg);
-    color: var(--badge-new);
-  }
 
-    background: var(--badge-hot-bg);
-    color: var(--badge-hot);
-  }
 
-    background: var(--badge-replied-bg);
-    color: var(--badge-replied);
-  }
 
-    background: var(--badge-cold-bg);
-    color: var(--badge-cold);
-  }
   /* ===================== TASKS SCREEN ===================== */
 
   .task-row {
@@ -3834,15 +3766,8 @@
     transform: rotate(-45deg) translateY(-1px);
   }
 
-    border-color: rgba(0,0,0,0.18);
-  }
 
-    background: #0A2540;
-    border-color: #0A2540;
-  }
 
-    border-color: #FFFFFF;
-  }
 
   .task-info { flex: 1; min-width: 0; }
 
@@ -3861,9 +3786,6 @@
     text-decoration-color: rgba(255,255,255,0.2);
   }
 
-    color: #8898AA;
-    text-decoration-color: rgba(0,0,0,0.15);
-  }
 
   .task-meta {
     font-size: 16px;
@@ -3912,7 +3834,7 @@
     margin-top: 2px;
   }
 
-  /* Task screen filter — same pattern as leads */
+  /* Task screen filter â€” same pattern as leads */
   .tasks-filter-wrap {
     display: flex;
     gap: 8px;
@@ -3932,9 +3854,9 @@
     gap: 36px;
   }
 
-  /* Kai task suggestion — reuse acai-suggestion class */
+  /* Kai task suggestion â€” reuse acai-suggestion class */
 
-  /* Add task button — floating */
+  /* Add task button â€” floating */
   .tasks-add-fab {
     position: absolute;
     bottom: 110px;
@@ -3962,9 +3884,6 @@
     stroke-width: 2;
   }
 
-    background: #0A2540;
-    border-color: #0A2540;
-  }
 
   /* section dividers within tasks screen */
   .tasks-section-header {
@@ -4248,7 +4167,7 @@
   .settings-section { padding: 24px 0 8px; border-bottom: 1px solid var(--border); }
   .settings-section:last-child { border-bottom: none; }
 
-  /* ── SETTINGS ROW PATTERN (icon rows) ──────────────────── */
+  /* â”€â”€ SETTINGS ROW PATTERN (icon rows) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   /* Settings panel inside drawer */
   .drawer-settings {
     position: absolute;
@@ -4280,7 +4199,7 @@
   .drawer-settings-title { font-size: 20px; font-weight: 400; color: var(--text-primary); letter-spacing: -0.01em; }
   .drawer-settings-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
 
-  /* Settings rows — transparent card style matching app standard */
+  /* Settings rows â€” transparent card style matching app standard */
   .stt-list {
     display: flex;
     flex-direction: column;
@@ -4336,7 +4255,7 @@
     letter-spacing: 0.1em; text-transform: uppercase; padding: 0 26px; margin-bottom: 4px;
   }
 
-  /* ── CONNECTOR CARD PATTERN ────────────────────────────── */
+  /* â”€â”€ CONNECTOR CARD PATTERN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .conn-card {
     display: flex;
     flex-direction: column;
@@ -4412,11 +4331,11 @@
 
   .settings-chevron { width: 14px; height: 14px; stroke: var(--text-tertiary); fill: none; stroke-width: 2; }
 
-  /* ── DRAWER CONNECTED APPS ──────────────────────────────── */
+  /* â”€â”€ DRAWER CONNECTED APPS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .drawer-app-chip:active { background:rgba(255,255,255,0.08); }
   .drawer-app-dot.connected { background:var(--status-active); }
 
-  /* ── INTEGRATIONS (Settings) ────────────────────────────── */
+  /* â”€â”€ INTEGRATIONS (Settings) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .integration-row {
     display: flex;
     flex-direction: row;
@@ -4487,7 +4406,7 @@
 
   .settings-danger { color: #FF453A !important; }
 
-  /* ── MODEL SELECTOR SHEET ───────────────────────────────── */
+  /* â”€â”€ MODEL SELECTOR SHEET â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   .model-option {
     display: flex;
     align-items: center;
@@ -4526,18 +4445,18 @@
   }
   .scroll-to-bottom.visible { display: flex; }
 
-  /* ── iOS SAFARI FIXES (@supports isolates to iOS only) ─── */
+  /* â”€â”€ iOS SAFARI FIXES (@supports isolates to iOS only) â”€â”€â”€ */
   @supports (-webkit-touch-callout: none) {
     /* Fix 1+2: Enable click events on buttons inside position:fixed on iOS */
     body { cursor: pointer; }
 
-    /* Fix 3: Watermark — sit above input bar (iOS safe-area is larger) */
+    /* Fix 3: Watermark â€” sit above input bar (iOS safe-area is larger) */
     .ios-watermark { bottom: calc(10px + env(safe-area-inset-bottom)) !important; }
 
-    /* Fix 4: Page height — iOS 100vh includes browser chrome, use fill-available */
+    /* Fix 4: Page height â€” iOS 100vh includes browser chrome, use fill-available */
     body { min-height: -webkit-fill-available; }
 
-    /* Fix 5: Input bar — account for iOS home indicator */
+    /* Fix 5: Input bar â€” account for iOS home indicator */
     .fixed-input-bar { bottom: max(40px, calc(180px + env(safe-area-inset-bottom))); }
   }
-  /* ─────────────────────────────────────────────────────────── */
+  /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
