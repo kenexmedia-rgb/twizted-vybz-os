@@ -1,11 +1,11 @@
 import { LeadsList } from '@/components/leads-list';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 import type { Lead } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
 export default async function LeadsPage() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('leads')
     .select('*')
     .order('created_at', { ascending: false })
