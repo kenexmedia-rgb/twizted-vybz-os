@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   const apiKey = process.env.ELEVENLABS_API_KEY;
-  const headers = {
+  const headers: Record<string, string> = {
     'x-transcription-configured': apiKey ? 'true' : 'false'
   };
 
@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
     );
 
     if (!response.ok) {
+      headers['x-transcription-upstream-status'] = String(response.status);
       return NextResponse.json({ text: null }, { headers });
     }
 
@@ -47,6 +48,7 @@ export async function POST(request: NextRequest) {
       { headers }
     );
   } catch {
+    headers['x-transcription-error'] = 'request_failed';
     return NextResponse.json({ text: null }, { headers });
   }
 }
