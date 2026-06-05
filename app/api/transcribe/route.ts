@@ -2,9 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   const apiKey = process.env.ELEVENLABS_API_KEY;
+  const headers = {
+    'x-transcription-configured': apiKey ? 'true' : 'false'
+  };
 
   if (!apiKey) {
-    return NextResponse.json({ text: null });
+    return NextResponse.json({ text: null }, { headers });
   }
 
   try {
@@ -12,7 +15,7 @@ export async function POST(request: NextRequest) {
     const audio = incoming.get('audio');
 
     if (!(audio instanceof File) || audio.size === 0) {
-      return NextResponse.json({ text: null });
+      return NextResponse.json({ text: null }, { headers });
     }
 
     const formData = new FormData();
@@ -35,12 +38,15 @@ export async function POST(request: NextRequest) {
     );
 
     if (!response.ok) {
-      return NextResponse.json({ text: null });
+      return NextResponse.json({ text: null }, { headers });
     }
 
     const payload = (await response.json()) as { text?: string };
-    return NextResponse.json({ text: payload.text?.trim() || null });
+    return NextResponse.json(
+      { text: payload.text?.trim() || null },
+      { headers }
+    );
   } catch {
-    return NextResponse.json({ text: null });
+    return NextResponse.json({ text: null }, { headers });
   }
 }
