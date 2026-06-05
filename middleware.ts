@@ -4,7 +4,10 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith('/api/auth/')) {
+  if (
+    request.nextUrl.pathname.startsWith('/api/auth/') ||
+    request.nextUrl.pathname === '/api/onboard/message'
+  ) {
     return NextResponse.next();
   }
 
