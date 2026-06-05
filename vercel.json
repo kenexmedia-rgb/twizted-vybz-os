@@ -7,11 +7,11 @@
     },
     {
       "path": "/api/cron/budget-warning",
-      "schedule": "0 * * * *"
+      "schedule": "15 0 * * *"
     },
     {
       "path": "/api/cron/enforce-budgets",
-      "schedule": "*/15 * * * *"
+      "schedule": "30 0 * * *"
     },
     {
       "path": "/api/cron/daily-summary",
