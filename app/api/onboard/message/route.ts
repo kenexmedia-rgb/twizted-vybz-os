@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { callClaude } from '@/lib/anthropic';
 import { getBearerToken } from '@/lib/auth';
+import {
+  BudgetExceededError,
+  callModel,
+  getModelText
+} from '@/lib/model';
 import { fillOnboardingPrompt } from '@/lib/onboarding/prompts';
 import {
   parseKnownFields,
@@ -31,6 +35,11 @@ export async function POST(request: NextRequest) {
   });
 
   const token = getBearerToken(request);
+  let modelContext: {
+    user_id?: string | null;
+    organization_id?: string | null;
+    company_id?: string | null;
+  } = {};
 
   if (token) {
     const {
@@ -40,7 +49,9 @@ export async function POST(request: NextRequest) {
     if (user) {
       const { data: profile } = await supabaseAdmin
         .from('users')
-        .select('kai_system_prompt, user_type')
+        .select(
+          'id, organization_id, company_id, kai_system_prompt, user_type'
+        )
         .eq('id', user.id)
         .single();
 
@@ -60,13 +71,35 @@ export async function POST(request: NextRequest) {
           accountStatus: 'signed-in'
         });
       }
+
+      if (profile) {
+        modelContext = {
+          user_id: profile.id,
+          organization_id: profile.organization_id,
+          company_id: profile.company_id
+        };
+      }
     }
   }
 
   try {
-    const reply = await callClaude({ system, messages });
-    return NextResponse.json({ reply });
+    const response = await callModel({
+      system,
+      messages,
+      context: {
+        ...modelContext,
+        endpoint_name: '/api/onboard/message'
+      }
+    });
+    return NextResponse.json({ reply: getModelText(response), usage: response.usage });
   } catch (error) {
+    if (error instanceof BudgetExceededError) {
+      return NextResponse.json(
+        { error: 'Monthly AI usage limit reached' },
+        { status: 402 }
+      );
+    }
+
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Claude request failed' },
       { status: 502 }

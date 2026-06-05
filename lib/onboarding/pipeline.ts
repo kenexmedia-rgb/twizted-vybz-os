@@ -1,4 +1,4 @@
-import { callClaude } from '@/lib/anthropic';
+import { callModel, getModelText } from '@/lib/model';
 import {
   EXTRACTION_SYSTEM_PROMPT,
   KAI_PROMPT_GENERATOR,
@@ -19,7 +19,12 @@ function transcriptText(messages: ConversationMessage[]) {
 
 export async function extractFoundation(
   userType: UserType,
-  messages: ConversationMessage[]
+  messages: ConversationMessage[],
+  context: {
+    user_id: string;
+    organization_id: string;
+    company_id?: string | null;
+  }
 ) {
   const transcript = transcriptText(messages);
   const template =
@@ -30,7 +35,7 @@ export async function extractFoundation(
   let rawOutput = '';
 
   for (let attempt = 0; attempt < 2; attempt += 1) {
-    rawOutput = await callClaude({
+    const response = await callModel({
       system,
       messages: [
         {
@@ -38,8 +43,13 @@ export async function extractFoundation(
           content: 'Extract the foundation seed from the transcript.'
         }
       ],
-      maxTokens: 1400
+      max_tokens: 1400,
+      context: {
+        ...context,
+        endpoint_name: '/api/onboard/complete:extract'
+      }
     });
+    rawOutput = getModelText(response);
 
     try {
       return {
@@ -58,9 +68,14 @@ export async function extractFoundation(
 }
 
 export async function generateKaiPrompt(
-  seed: OwnerFoundationSeed | SalesproFoundationSeed
+  seed: OwnerFoundationSeed | SalesproFoundationSeed,
+  context: {
+    user_id: string;
+    organization_id: string;
+    company_id?: string | null;
+  }
 ) {
-  return callClaude({
+  const response = await callModel({
     system: KAI_PROMPT_GENERATOR.replace(
       '{{FOUNDATION_SEED_JSON}}',
       JSON.stringify(seed)
@@ -71,6 +86,12 @@ export async function generateKaiPrompt(
         content: 'Generate the client-specific Kai system prompt.'
       }
     ],
-    maxTokens: 1800
+    max_tokens: 1800,
+    context: {
+      ...context,
+      endpoint_name: '/api/onboard/complete:generate'
+    }
   });
+
+  return getModelText(response);
 }

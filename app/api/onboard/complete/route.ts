@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireSession } from '@/lib/auth';
+import { BudgetExceededError } from '@/lib/model';
 import {
   extractFoundation,
   generateKaiPrompt
@@ -88,7 +89,29 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const extraction = await extractFoundation(userType, transcriptRows);
+  const modelContext = {
+    user_id: profile.id,
+    organization_id: profile.organization_id,
+    company_id: profile.company_id
+  };
+  let extraction;
+
+  try {
+    extraction = await extractFoundation(
+      userType,
+      transcriptRows,
+      modelContext
+    );
+  } catch (error) {
+    if (error instanceof BudgetExceededError) {
+      return NextResponse.json(
+        { error: 'Monthly AI usage limit reached' },
+        { status: 402 }
+      );
+    }
+
+    throw error;
+  }
 
   if (!extraction.seed) {
     const reviewPayload = {
@@ -125,7 +148,23 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const kaiSystemPrompt = await generateKaiPrompt(extraction.seed);
+  let kaiSystemPrompt;
+
+  try {
+    kaiSystemPrompt = await generateKaiPrompt(
+      extraction.seed,
+      modelContext
+    );
+  } catch (error) {
+    if (error instanceof BudgetExceededError) {
+      return NextResponse.json(
+        { error: 'Monthly AI usage limit reached' },
+        { status: 402 }
+      );
+    }
+
+    throw error;
+  }
 
   if (userType === 'owner') {
     const seed = extraction.seed as OwnerFoundationSeed;
