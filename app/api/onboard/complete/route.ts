@@ -37,11 +37,19 @@ export async function POST(request: NextRequest) {
   const { data: profile, error: profileError } = await supabaseAdmin
     .from('users')
     .select('id, organization_id, company_id, email')
-    .eq('id', auth.user.id)
-    .single();
+    .or(
+      `id.eq.${auth.user.id},user_id.eq.${auth.user.id},email.eq.${auth.user.email}`
+    )
+    .maybeSingle();
 
   if (profileError || !profile) {
-    return NextResponse.json({ error: 'User profile not found' }, { status: 404 });
+    return NextResponse.json(
+      {
+        error: 'User profile not found',
+        detail: profileError?.message ?? null
+      },
+      { status: 404 }
+    );
   }
 
   const rows = messages.map((message, index) => ({
