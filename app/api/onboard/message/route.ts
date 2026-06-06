@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
         system = profile.kai_system_prompt;
       } else {
         system = fillOnboardingPrompt({
-          userType: parseUserType(profile?.user_type) ?? requestedUserType,
+          userType: requestedUserType,
           knownFields: {
             email: knownFields.email ?? user.email,
             name: knownFields.name
