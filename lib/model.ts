@@ -34,6 +34,7 @@ type ModelContext = {
   organization_id?: string | null;
   company_id?: string | null;
   endpoint_name: string;
+  autonomous?: boolean;
 };
 
 type CallModelOptions = {
@@ -114,6 +115,10 @@ async function logSuccessfulCall({
     throw new Error('No organization is available for usage logging');
   }
 
+  if (context.autonomous && !context.user_id) {
+    throw new Error('An autonomous model call requires a user_id');
+  }
+
   const { error: usageError } = await supabaseAdmin.from('usage_logs').insert({
     user_id: context.user_id ?? null,
     organization_id: organizationId,
@@ -144,7 +149,10 @@ async function logSuccessfulCall({
       model: response.model,
       input_tokens: response.usage.input_tokens,
       output_tokens: response.usage.output_tokens,
-      cached_tokens: cachedTokens
+      cached_tokens: cachedTokens,
+      company_id: context.company_id ?? null,
+      // The insert trigger replaces this marker with the current DB value.
+      autonomy_level_at_action: context.autonomous ? 'ask_me_first' : null
     });
 
   if (agentLogError) {
