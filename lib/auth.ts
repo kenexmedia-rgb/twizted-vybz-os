@@ -62,6 +62,17 @@ export async function getSessionScope(authUserId: string) {
     return null;
   }
 
+  if (profile.user_type === 'salespro') {
+    return {
+      organization_id: profile.organization_id,
+      company_id: null,
+      role: null,
+      user_type: 'salespro',
+      is_billable_seat: false,
+      can_switch_company: false
+    } satisfies SessionScope;
+  }
+
   const { data: memberships, error } = await supabaseAdmin
     .from('company_users')
     .select('organization_id, company_id, role, is_billable_seat')
@@ -75,7 +86,7 @@ export async function getSessionScope(authUserId: string) {
   if (!memberships?.length) {
     return {
       organization_id: profile.organization_id,
-      company_id: profile.user_type === 'salespro' ? null : profile.company_id,
+      company_id: profile.company_id,
       role: null,
       user_type: profile.user_type,
       is_billable_seat: false,
