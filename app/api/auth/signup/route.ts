@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin, createSupabaseClient } from '@/lib/supabase';
+import { getSessionScope } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
@@ -43,11 +44,19 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const scope = await getSessionScope(data.user.id);
+
   return NextResponse.json(
     {
       user: data.user,
       token: data.session.access_token,
-      session: data.session
+      user_type: scope?.user_type ?? null,
+      scope,
+      session: {
+        ...data.session,
+        user_type: scope?.user_type ?? null,
+        scope
+      }
     },
     { status: 201 }
   );

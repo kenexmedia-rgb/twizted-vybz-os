@@ -55,7 +55,20 @@ export function SetPasswordForm({ url, anonKey }: SetPasswordFormProps) {
     }
 
     const { error } = await client.auth.updateUser({ password });
-    setMessage(error ? error.message : 'Password set. You can now log in.');
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    const { error: membershipError } = await client.rpc(
+      'accept_company_invite'
+    );
+    setMessage(
+      membershipError
+        ? membershipError.message
+        : 'Password set. Your company access is active and you can now log in.'
+    );
   }
 
   return (

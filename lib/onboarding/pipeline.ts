@@ -2,7 +2,8 @@ import { callModel, getModelText } from '@/lib/model';
 import {
   EXTRACTION_SYSTEM_PROMPT,
   KAI_PROMPT_GENERATOR,
-  SALESPRO_EXTRACTION_SYSTEM_PROMPT
+  SALESPRO_EXTRACTION_SYSTEM_PROMPT,
+  SALESPRO_KAI_PROMPT_GENERATOR
 } from '@/lib/onboarding/prompts';
 import type {
   ConversationMessage,
@@ -68,6 +69,7 @@ export async function extractFoundation(
 }
 
 export async function generateKaiPrompt(
+  userType: UserType,
   seed: OwnerFoundationSeed | SalesproFoundationSeed,
   context: {
     user_id: string;
@@ -75,8 +77,12 @@ export async function generateKaiPrompt(
     company_id?: string | null;
   }
 ) {
+  const template =
+    userType === 'salespro'
+      ? SALESPRO_KAI_PROMPT_GENERATOR
+      : KAI_PROMPT_GENERATOR;
   const response = await callModel({
-    system: KAI_PROMPT_GENERATOR.replace(
+    system: template.replace(
       '{{FOUNDATION_SEED_JSON}}',
       JSON.stringify(seed)
     ),

@@ -1,5 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createSupabaseClient } from '@/lib/supabase';
+import { createSupabaseClient, supabaseAdmin } from '@/lib/supabase';
+
+export type SessionScope = {
+  organization_id: string;
+  company_id: string | null;
+  role: 'org_owner' | 'company_owner' | 'company_member' | null;
+  user_type: 'owner' | 'salespro';
+  is_billable_seat: boolean;
+  can_switch_company: boolean;
+};
 
 export function getBearerToken(request: NextRequest) {
   const authorization = request.headers.get('authorization');
@@ -40,4 +49,63 @@ export async function requireSession(request: NextRequest) {
   }
 
   return { user, response: null };
+}
+
+export async function getSessionScope(authUserId: string) {
+  const { data: profile, error: profileError } = await supabaseAdmin
+    .from('users')
+    .select('id, organization_id, company_id, user_type')
+    .eq('user_id', authUserId)
+    .single();
+
+  if (profileError || !profile) {
+    return null;
+  }
+
+  if (profile.user_type === 'salespro') {
+    return {
+      organization_id: profile.organization_id,
+      company_id: null,
+      role: null,
+      user_type: 'salespro',
+      is_billable_seat: false,
+      can_switch_company: false
+    } satisfies SessionScope;
+  }
+
+  const { data: memberships, error } = await supabaseAdmin
+    .from('company_users')
+    .select('organization_id, company_id, role, is_billable_seat')
+    .eq('user_id', profile.id)
+    .order('created_at');
+
+  if (error) {
+    return null;
+  }
+
+  if (!memberships?.length) {
+    return {
+      organization_id: profile.organization_id,
+      company_id: profile.company_id,
+      role: null,
+      user_type: profile.user_type,
+      is_billable_seat: false,
+      can_switch_company: false
+    } satisfies SessionScope;
+  }
+
+  const orgOwner = memberships.find(
+    (membership) => membership.role === 'org_owner'
+  );
+  const membership = orgOwner ?? memberships[0];
+
+  return {
+    organization_id: membership.organization_id,
+    company_id: orgOwner ? null : membership.company_id,
+    role: membership.role,
+    user_type: profile.user_type,
+    is_billable_seat: membership.is_billable_seat,
+    can_switch_company:
+      profile.user_type === 'owner' && Boolean(orgOwner)
+  } satisfies SessionScope;
 }

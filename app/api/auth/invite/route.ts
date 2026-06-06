@@ -23,22 +23,38 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (!['owner', 'admin', 'member', 'viewer'].includes(role)) {
+  if (!['company_owner', 'company_member'].includes(role)) {
     return NextResponse.json(
-      { error: 'role must be owner, admin, member, or viewer' },
+      { error: 'role must be company_owner or company_member' },
       { status: 400 }
     );
   }
 
   const { data: inviter, error: inviterError } = await supabaseAdmin
     .from('users')
-    .select('organization_id')
-    .eq('id', auth.user.id)
+    .select('id, organization_id')
+    .eq('user_id', auth.user.id)
     .single();
 
   if (inviterError || !inviter) {
     return NextResponse.json(
       { error: 'Authenticated user profile not found' },
+      { status: 403 }
+    );
+  }
+
+  const { data: ownerMembership, error: ownerError } = await supabaseAdmin
+    .from('company_users')
+    .select('id')
+    .eq('user_id', inviter.id)
+    .eq('organization_id', inviter.organization_id)
+    .eq('role', 'org_owner')
+    .limit(1)
+    .maybeSingle();
+
+  if (ownerError || !ownerMembership) {
+    return NextResponse.json(
+      { error: 'Only an organization owner can invite company users' },
       { status: 403 }
     );
   }
@@ -70,7 +86,9 @@ export async function POST(request: NextRequest) {
       data: {
         company_id: company.id,
         organization_id: company.organization_id,
-        role
+        company_role: role,
+        invited_by: inviter.id,
+        is_billable_seat: true
       }
     }
   );

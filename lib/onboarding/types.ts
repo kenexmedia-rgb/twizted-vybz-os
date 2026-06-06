@@ -32,7 +32,9 @@ export type SalesproFoundationSeed = {
   employer: string | null;
   territory: string[];
   lead_sources: string[];
+  contact_phone: string | null;
   contact_email: string | null;
   differentiator: string | null;
+  competitors: string[];
   employer_context: Record<string, unknown>;
 };
