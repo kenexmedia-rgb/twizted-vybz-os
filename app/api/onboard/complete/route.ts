@@ -152,6 +152,7 @@ export async function POST(request: NextRequest) {
 
   try {
     kaiSystemPrompt = await generateKaiPrompt(
+      userType,
       extraction.seed,
       modelContext
     );
@@ -224,7 +225,10 @@ export async function POST(request: NextRequest) {
           employer: seed.employer,
           territory: seed.territory,
           lead_sources: seed.lead_sources,
+          contact_phone: seed.contact_phone,
+          contact_email: seed.contact_email,
           differentiator: seed.differentiator,
+          competitors: seed.competitors,
           employer_context: seed.employer_context,
           raw_seed: seed
         },
@@ -244,6 +248,8 @@ export async function POST(request: NextRequest) {
         name: seed.owner_name ?? undefined,
         email: seed.contact_email ?? profile.email,
         user_type: 'salespro',
+        employer: seed.employer,
+        employer_context: seed.employer_context,
         kai_system_prompt: kaiSystemPrompt
       })
       .eq('id', profile.id);
@@ -251,11 +257,30 @@ export async function POST(request: NextRequest) {
     if (userError) {
       return NextResponse.json({ error: userError.message }, { status: 500 });
     }
+
+    const { data: agents, error: agentError } = await supabaseAdmin.rpc(
+      'provision_salespro_agents',
+      { target_user_id: profile.id }
+    );
+
+    if (agentError || agents?.length !== 6) {
+      return NextResponse.json(
+        {
+          error:
+            agentError?.message ??
+            `Expected 6 Sales Pro agents, provisioned ${agents?.length ?? 0}`
+        },
+        { status: 500 }
+      );
+    }
   }
 
   return NextResponse.json({
     user_type: userType,
     foundation_seed: extraction.seed,
-    kai_system_prompt: kaiSystemPrompt
+    kai_system_prompt: kaiSystemPrompt,
+    ...(userType === 'salespro'
+      ? { website_generated: false, agents_provisioned: 6 }
+      : {})
   });
 }

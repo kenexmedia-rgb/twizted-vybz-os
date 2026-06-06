@@ -4,7 +4,8 @@ import { createSupabaseClient, supabaseAdmin } from '@/lib/supabase';
 export type SessionScope = {
   organization_id: string;
   company_id: string | null;
-  role: 'org_owner' | 'company_owner' | 'company_member';
+  role: 'org_owner' | 'company_owner' | 'company_member' | null;
+  user_type: 'owner' | 'salespro';
   is_billable_seat: boolean;
   can_switch_company: boolean;
 };
@@ -53,7 +54,7 @@ export async function requireSession(request: NextRequest) {
 export async function getSessionScope(authUserId: string) {
   const { data: profile, error: profileError } = await supabaseAdmin
     .from('users')
-    .select('id')
+    .select('id, organization_id, company_id, user_type')
     .eq('user_id', authUserId)
     .single();
 
@@ -67,8 +68,19 @@ export async function getSessionScope(authUserId: string) {
     .eq('user_id', profile.id)
     .order('created_at');
 
-  if (error || !memberships?.length) {
+  if (error) {
     return null;
+  }
+
+  if (!memberships?.length) {
+    return {
+      organization_id: profile.organization_id,
+      company_id: profile.user_type === 'salespro' ? null : profile.company_id,
+      role: null,
+      user_type: profile.user_type,
+      is_billable_seat: false,
+      can_switch_company: false
+    } satisfies SessionScope;
   }
 
   const orgOwner = memberships.find(
@@ -80,7 +92,9 @@ export async function getSessionScope(authUserId: string) {
     organization_id: membership.organization_id,
     company_id: orgOwner ? null : membership.company_id,
     role: membership.role,
+    user_type: profile.user_type,
     is_billable_seat: membership.is_billable_seat,
-    can_switch_company: Boolean(orgOwner)
+    can_switch_company:
+      profile.user_type === 'owner' && Boolean(orgOwner)
   } satisfies SessionScope;
 }

@@ -32,9 +32,11 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({
     user: data.user,
     token: data.session.access_token,
+    user_type: scope?.user_type ?? null,
     scope,
     session: {
       ...data.session,
+      user_type: scope?.user_type ?? null,
       scope
     }
   });
