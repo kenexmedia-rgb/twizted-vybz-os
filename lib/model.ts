@@ -46,6 +46,10 @@ type CallModelOptions = {
   [key: string]: unknown;
 };
 
+type StreamModelCallbacks = {
+  onText: (text: string) => void | Promise<void>;
+};
+
 function calculateCost(model: string, usage: ModelUsage) {
   const inputRate = model.includes('sonnet') ? 3 : 3;
   const outputRate = model.includes('sonnet') ? 15 : 15;
@@ -226,6 +230,163 @@ export async function callModel(options: CallModelOptions) {
 
   await logSuccessfulCall({ response: payload, context });
   return payload;
+}
+
+export async function streamModel(
+  options: CallModelOptions,
+  callbacks: StreamModelCallbacks
+) {
+  const {
+    model = DEFAULT_MODEL,
+    system,
+    messages,
+    max_tokens = 1200,
+    context,
+    ...standardOptions
+  } = options;
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('ANTHROPIC_API_KEY is not configured');
+  }
+
+  await checkBudget(context.user_id);
+
+  const response = await fetch(ANTHROPIC_API_URL, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify({
+      ...standardOptions,
+      model,
+      max_tokens,
+      stream: true,
+      system: [
+        {
+          type: 'text',
+          text: system,
+          cache_control: { type: 'ephemeral' }
+        }
+      ],
+      messages
+    }),
+    cache: 'no-store'
+  });
+
+  if (!response.ok) {
+    const payload = (await response.json().catch(() => null)) as {
+      error?: { message?: string };
+    } | null;
+    throw new Error(
+      payload?.error?.message ?? `Claude API failed with ${response.status}`
+    );
+  }
+
+  if (!response.body) {
+    throw new Error('Claude returned an empty stream');
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let text = '';
+  let responseId = '';
+  let responseModel = model;
+  let stopReason: string | null = null;
+  let usage: ModelUsage = {
+    input_tokens: 0,
+    output_tokens: 0
+  };
+
+  const processEvent = async (event: string) => {
+    const dataLines = event
+      .split('\n')
+      .filter((line) => line.startsWith('data:'))
+      .map((line) => line.slice(5).trim());
+
+    for (const dataLine of dataLines) {
+      if (!dataLine || dataLine === '[DONE]') {
+        continue;
+      }
+
+      const payload = JSON.parse(dataLine) as {
+        type?: string;
+        message?: {
+          id?: string;
+          model?: string;
+          usage?: ModelUsage;
+        };
+        delta?: {
+          type?: string;
+          text?: string;
+          stop_reason?: string | null;
+        };
+        usage?: Partial<ModelUsage>;
+        error?: { message?: string };
+      };
+
+      if (payload.type === 'error') {
+        throw new Error(payload.error?.message ?? 'Claude stream failed');
+      }
+
+      if (payload.type === 'message_start' && payload.message) {
+        responseId = payload.message.id ?? responseId;
+        responseModel = payload.message.model ?? responseModel;
+        usage = { ...usage, ...payload.message.usage };
+      }
+
+      if (
+        payload.type === 'content_block_delta' &&
+        payload.delta?.type === 'text_delta' &&
+        payload.delta.text
+      ) {
+        text += payload.delta.text;
+        await callbacks.onText(payload.delta.text);
+      }
+
+      if (payload.type === 'message_delta') {
+        stopReason = payload.delta?.stop_reason ?? stopReason;
+        usage = { ...usage, ...payload.usage };
+      }
+    }
+  };
+
+  while (true) {
+    const { done, value } = await reader.read();
+    buffer += decoder.decode(value, { stream: !done }).replace(/\r\n/g, '\n');
+    const events = buffer.split('\n\n');
+    buffer = events.pop() ?? '';
+
+    for (const event of events) {
+      await processEvent(event);
+    }
+
+    if (done) {
+      break;
+    }
+  }
+
+  if (buffer.trim()) {
+    await processEvent(buffer);
+  }
+
+  if (!text.trim()) {
+    throw new Error('Claude returned no text content');
+  }
+
+  const modelResponse: ModelResponse = {
+    id: responseId,
+    model: responseModel,
+    content: [{ type: 'text', text }],
+    usage,
+    stop_reason: stopReason
+  };
+
+  await logSuccessfulCall({ response: modelResponse, context });
+  return modelResponse;
 }
 
 export function getModelText(response: ModelResponse) {

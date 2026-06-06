@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireSession } from '@/lib/auth';
+import { ensureDiscoverySession } from '@/lib/discovery';
 import { BudgetExceededError } from '@/lib/model';
 import {
   extractFoundation,
@@ -275,12 +276,25 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  const discovery =
+    userType === 'owner'
+      ? await ensureDiscoverySession(profile.organization_id)
+      : null;
+
   return NextResponse.json({
     user_type: userType,
     foundation_seed: extraction.seed,
     kai_system_prompt: kaiSystemPrompt,
     ...(userType === 'salespro'
       ? { website_generated: false, agents_provisioned: 6 }
-      : {})
+      : {
+          discovery: {
+            session_id: discovery?.id,
+            status: discovery?.status,
+            endpoint: '/api/discovery',
+            action: 'start',
+            auto_start: true
+          }
+        })
   });
 }
