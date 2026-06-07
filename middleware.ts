@@ -112,9 +112,14 @@ export async function middleware(request: NextRequest) {
 
   const authorization = request.headers.get('authorization');
   const isCron = pathname.startsWith('/api/cron/');
+  const isPublicVoice =
+    pathname === '/api/voice/inbound' ||
+    pathname === '/api/voice/turn' ||
+    pathname === '/api/voice/tts';
   const isPublic =
     pathname === '/api/onboard/message' ||
     pathname === '/api/transcribe' ||
+    isPublicVoice ||
     isCron;
   let userId: string | null = null;
 
