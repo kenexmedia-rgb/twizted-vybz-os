@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSessionScope, requireSession } from '@/lib/auth';
+import { requireSession } from '@/lib/auth';
 import {
   AgentProvisionError,
   provisionAgentsFromPackage
@@ -44,12 +44,11 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const [scope, callerProfileResult, targetProfileResult, companyResult] =
+  const [callerProfileResult, targetProfileResult, companyResult] =
     await Promise.all([
-      getSessionScope(auth.user.id),
       supabaseAdmin
         .from('users')
-        .select('id, organization_id, company_id')
+        .select('id, organization_id, company_id, user_type')
         .eq('user_id', auth.user.id)
         .single(),
       supabaseAdmin
@@ -66,22 +65,18 @@ export async function POST(request: NextRequest) {
         : Promise.resolve({ data: null, error: null })
     ]);
 
-  if (!scope || callerProfileResult.error || !callerProfileResult.data) {
+  if (callerProfileResult.error || !callerProfileResult.data) {
     return NextResponse.json(
       { error: 'User profile not found for this session' },
       { status: 403 }
     );
   }
 
+  const callerProfile = callerProfileResult.data;
   const targetProfile = targetProfileResult.data;
   const company = companyResult.data;
   const callerBelongsToOrganization =
-    scope.organization_id === organizationId;
-  const callerHasCompanyAccess =
-    scope.can_switch_company ||
-    (scope.user_type === 'salespro'
-      ? companyId === null && callerProfileResult.data.id === userId
-      : scope.company_id === companyId);
+    callerProfile.organization_id === organizationId;
   const targetBelongsToOrganization =
     !targetProfileResult.error &&
     targetProfile?.organization_id === organizationId;
@@ -91,10 +86,39 @@ export async function POST(request: NextRequest) {
 
   if (
     !callerBelongsToOrganization ||
-    !callerHasCompanyAccess ||
     !targetBelongsToOrganization ||
     !companyBelongsToOrganization
   ) {
+    return NextResponse.json(
+      { error: 'Organization or company access denied' },
+      { status: 403 }
+    );
+  }
+
+  let callerHasCompanyAccess = false;
+
+  if (callerProfile.user_type === 'salespro') {
+    callerHasCompanyAccess =
+      companyId === null && callerProfile.id === userId;
+  } else {
+    const { data: memberships, error: membershipError } = await supabaseAdmin
+      .from('company_users')
+      .select('company_id, role')
+      .eq('user_id', callerProfile.id)
+      .eq('organization_id', organizationId);
+
+    callerHasCompanyAccess =
+      !membershipError &&
+      Boolean(
+        memberships?.some(
+          (membership) =>
+            membership.role === 'org_owner' ||
+            membership.company_id === companyId
+        )
+      );
+  }
+
+  if (!callerHasCompanyAccess) {
     return NextResponse.json(
       { error: 'Organization or company access denied' },
       { status: 403 }
