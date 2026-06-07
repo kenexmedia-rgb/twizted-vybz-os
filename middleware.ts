@@ -115,8 +115,7 @@ export async function middleware(request: NextRequest) {
   const isPublicVoice =
     pathname === '/api/voice/inbound' ||
     pathname === '/api/voice/turn' ||
-    pathname === '/api/voice/tts' ||
-    pathname === '/api/voice/setup';
+    pathname === '/api/voice/tts';
   const isPublic =
     pathname === '/api/onboard/message' ||
     pathname === '/api/transcribe' ||
