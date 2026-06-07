@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseUrl = process.env.SUPA_SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 

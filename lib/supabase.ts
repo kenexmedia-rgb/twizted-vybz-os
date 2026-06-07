@@ -10,7 +10,7 @@ function requireEnv(name: string) {
   return value;
 }
 
-const supabaseUrl = requireEnv('SUPABASE_URL');
+const supabaseUrl = requireEnv('SUPA_SUPABASE_URL');
 const supabaseAnonKey = requireEnv('SUPABASE_ANON_KEY');
 
 if (!supabaseAnonKey.startsWith('eyJ')) {
